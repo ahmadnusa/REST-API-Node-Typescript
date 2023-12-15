@@ -11,7 +11,8 @@
   },
   "plugins": ["@typescript-eslint"],
   "ignorePatterns": [
-    "**/build/*, **/node_modules/*",
+    "**/build/*", 
+    "**/node_modules/*",
     "**/public/*",
     "**/tsconfig.json"
   ],

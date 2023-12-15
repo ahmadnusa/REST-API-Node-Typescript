@@ -1,8 +1,8 @@
 node_modules
 package-lock.json
 package.json
-eslintrc.json
-prettierrc.json
+.eslintrc.json
+.prettierrc
 tsconfig.json
 CHANGELOG.md
 readme.md
