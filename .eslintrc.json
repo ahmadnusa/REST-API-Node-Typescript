@@ -10,7 +10,11 @@
     "sourceType": "module"
   },
   "plugins": ["@typescript-eslint"],
-  "ignorePatterns": ["**/build/*, **/node_modules/*", "**/public/*"],
+  "ignorePatterns": [
+    "**/build/*, **/node_modules/*",
+    "**/public/*",
+    "**/tsconfig.json"
+  ],
   "rules": {
     "@typescript-eslint/consistent-type-imports": [
       "error",
