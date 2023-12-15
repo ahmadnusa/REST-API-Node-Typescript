@@ -16,11 +16,6 @@
     "**/tsconfig.json"
   ],
   "rules": {
-    "@typescript-eslint/consistent-type-imports": [
-      "error",
-      {
-        "prefer": "no-type-imports"
-      }
-    ]
+    "@typescript-eslint/consistent-type-imports": ["off"]
   }
 }
