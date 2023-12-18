@@ -1,12 +1,27 @@
-import express, { Application, NextFunction, Request, Response } from 'express'
+import express, { Application } from 'express'
+import { routes } from './routes'
+import { logger } from './utils/logger'
+import bodyParser from 'body-parser'
+import cors from 'cors'
 
 const app: Application = express()
 const port: number = 3000
 
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
-  res.status(200).send('Hello World!')
+// parse body request
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+
+// cors acces handler
+app.use(cors())
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Method', '*')
+  res.setHeader('Access-Control-Allow-Headers', '*')
+  next()
 })
 
+routes(app)
+
 app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}/`)
+  logger.info(`Listening at http://localhost:${port}/`)
 })

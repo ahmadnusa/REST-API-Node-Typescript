@@ -26,4 +26,4 @@ npm run build || {
   false;
 }
 
-echo 'pre-commit checks passed, you can commit now'
+echo 'pre-commit checks passed'
