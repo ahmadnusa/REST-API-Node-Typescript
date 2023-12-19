@@ -1,9 +1,6 @@
 import { Request, Response } from 'express'
 import { logger } from '../utils/logger'
-import {
-  createProductValidation,
-  updateProductValidation
-} from '../validations/product.validation'
+import { createProductValidation, updateProductValidation } from '../validations/product.validation'
 import {
   addProductToDB,
   deleteProductById,

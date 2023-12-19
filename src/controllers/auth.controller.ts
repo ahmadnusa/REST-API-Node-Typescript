@@ -1,9 +1,10 @@
 import { Request, Response } from 'express'
-import { createUserValidation } from '../validations/auth.validaion'
+import { createSessionValidation, createUserValidation } from '../validations/auth.validaion'
 import { v4 as uuid4 } from 'uuid'
 import { logger } from '../utils/logger'
-import { createUser } from '../services/auth.service'
-import { hashing } from '../utils/hashing'
+import { createUser, findUserByEmail } from '../services/auth.service'
+import { checkPassword, hashing } from '../utils/hashing'
+import { signJWT } from '../utils/jwt'
 
 export const registerUser = async (req: Request, res: Response) => {
   req.body.user_id = uuid4()
@@ -28,9 +29,56 @@ export const registerUser = async (req: Request, res: Response) => {
     })
   } catch (error: any) {
     logger.error(`ERR: auth - register = ${error.message}`)
-    return res.status(409).send({
+    return res.status(422).send({
       status: false,
-      statusCode: 409,
+      statusCode: 422,
+      message: error.message
+    })
+  }
+}
+
+export const createSession = async (req: Request, res: Response) => {
+  const { error, value } = createSessionValidation(req.body)
+  if (error) {
+    logger.error(`ERR: auth - register = ${error.message}`)
+    return res.status(422).send({
+      status: false,
+      statusCode: 422,
+      message: error.message
+    })
+  }
+  try {
+    const user: any = await findUserByEmail(value.email)
+    if (!user) {
+      logger.error('ERR: auth - register = user not found')
+      return res.status(422).send({
+        status: false,
+        statusCode: 422,
+        message: 'user not found'
+      })
+    }
+    const isPasswordMatch = checkPassword(value.password, user.password)
+    if (!isPasswordMatch) {
+      logger.error('ERR: auth - register = invalid email or password')
+      return res.status(422).send({
+        status: false,
+        statusCode: 422,
+        message: 'invalid email or password'
+      })
+    }
+    const accessToken = signJWT({ ...user }, { expiresIn: '1d' })
+    logger.info('login success')
+    return res.status(200).send({
+      status: true,
+      statusCode: 200,
+      message: 'login success',
+      data: { accessToken }
+    })
+  } catch (error: any) {
+    logger.error(`ERR: auth - register = ${error.message}`)
+    return res.status(422).send({
+      status: false,
+      statusCode: 422,
       message: error.message
     })
   }
