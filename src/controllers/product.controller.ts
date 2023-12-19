@@ -17,11 +17,11 @@ export const createProduct = async (req: Request, res: Response) => {
   req.body.product_id = uuidv4()
   const { error, value } = createProductValidation(req.body)
   if (error) {
-    logger.error('ERR: product - create = ', `${error.details[0].message}`)
+    logger.error(`ERR: product - create = ${error.message}`)
     return res.status(422).send({
       status: false,
       statusCode: 422,
-      message: error.details[0].message
+      message: error.message
     })
   }
   try {
@@ -32,12 +32,12 @@ export const createProduct = async (req: Request, res: Response) => {
       statusCode: 201,
       message: 'success add new product'
     })
-  } catch (error) {
-    logger.error('ERR: product - create = ', error)
+  } catch (error: any) {
+    logger.error(`ERR: product - create = ${error.message}`)
     return res.status(500).send({
       status: false,
       statusCode: 500,
-      message: 'internal server error'
+      message: error.message
     })
   }
 }
@@ -78,26 +78,16 @@ export const getProduct = async (req: Request, res: Response) => {
 
 export const updateProduct = async (req: Request, res: Response) => {
   const {
-    params: { id },
-    body
+    params: { id }
   } = req
-  // Check if req.body is empty
-  if (!body || Object.keys(body).length === 0) {
-    logger.error('ERR: product - update = Request body is missing or empty')
-    return res.status(400).send({
-      status: false,
-      statusCode: 400,
-      message: 'Request body is empty or does not contain valid data'
-    })
-  }
 
-  const { error, value } = updateProductValidation(body)
+  const { error, value } = updateProductValidation(req.body)
   if (error) {
-    logger.error('ERR: product - update', error)
+    logger.error(`ERR: product - update = ${error.message}`)
     return res.status(422).send({
       status: false,
       statusCode: 422,
-      message: error.details[0].message
+      message: error.message
     })
   }
   try {
@@ -116,12 +106,12 @@ export const updateProduct = async (req: Request, res: Response) => {
       statusCode: 200,
       message: 'success update product'
     })
-  } catch (error) {
-    logger.error('ERR: product - update = ', error)
+  } catch (error: any) {
+    logger.error(`ERR: product - update = ${error.message}`)
     return res.status(500).send({
       status: false,
       statusCode: 500,
-      message: 'internal server error'
+      message: error.message
     })
   }
 }
@@ -146,12 +136,12 @@ export const deleteProduct = async (req: Request, res: Response) => {
       statusCode: 200,
       message: 'success delete product'
     })
-  } catch (error) {
-    logger.error('ERR: product - delete = ', error)
+  } catch (error: any) {
+    logger.error(`ERR: product - delete = ${error.message}`)
     return res.status(500).send({
       status: false,
       statusCode: 500,
-      message: 'internal server error'
+      message: error.message
     })
   }
 }
