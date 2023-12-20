@@ -5,12 +5,13 @@ import { logger } from '../utils/logger'
 const deserializedToken = async (req: Request, res: Response, next: NextFunction) => {
   const accessToken = req.headers.authorization?.replace(/^Bearer\s/, '')
   if (!accessToken) {
-    logger.error('ERR: auth - register = access token not found')
-    return res.status(401).send({
-      status: false,
-      statusCode: 401,
-      message: 'access token not found'
-    })
+    // logger.error('ERR: deserialized - token = access token not found')
+    // return res.status(401).send({
+    //   status: false,
+    //   statusCode: 401,
+    //   message: 'access token not found'
+    // })
+    return next()
   }
 
   const token: any = verifyJWT(accessToken)
@@ -21,7 +22,7 @@ const deserializedToken = async (req: Request, res: Response, next: NextFunction
   }
 
   if (token.expired) {
-    logger.error('ERR: auth - register = access token expired')
+    logger.error('ERR: deserialized - token = access token expired')
     return res.status(401).send({
       status: false,
       statusCode: 401,

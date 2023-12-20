@@ -1,10 +1,14 @@
 import { Request, Response } from 'express'
-import { createSessionValidation, createUserValidation } from '../validations/auth.validaion'
+import {
+  createSessionValidation,
+  createUserValidation,
+  refreshSessionValidation
+} from '../validations/auth.validaion'
 import { v4 as uuid4 } from 'uuid'
 import { logger } from '../utils/logger'
 import { createUser, findUserByEmail } from '../services/auth.service'
 import { checkPassword, hashing } from '../utils/hashing'
-import { signJWT } from '../utils/jwt'
+import { signJWT, verifyJWT } from '../utils/jwt'
 
 export const registerUser = async (req: Request, res: Response) => {
   req.body.user_id = uuid4()
@@ -40,7 +44,7 @@ export const registerUser = async (req: Request, res: Response) => {
 export const createSession = async (req: Request, res: Response) => {
   const { error, value } = createSessionValidation(req.body)
   if (error) {
-    logger.error(`ERR: auth - register = ${error.message}`)
+    logger.error(`ERR: create - session = ${error.message}`)
     return res.status(422).send({
       status: false,
       statusCode: 422,
@@ -50,7 +54,7 @@ export const createSession = async (req: Request, res: Response) => {
   try {
     const user: any = await findUserByEmail(value.email)
     if (!user) {
-      logger.error('ERR: auth - register = user not found')
+      logger.error('ERR: create - session = user not found')
       return res.status(422).send({
         status: false,
         statusCode: 422,
@@ -59,7 +63,7 @@ export const createSession = async (req: Request, res: Response) => {
     }
     const isPasswordMatch = checkPassword(value.password, user.password)
     if (!isPasswordMatch) {
-      logger.error('ERR: auth - register = invalid email or password')
+      logger.error('ERR: create - session = invalid email or password')
       return res.status(422).send({
         status: false,
         statusCode: 422,
@@ -67,15 +71,56 @@ export const createSession = async (req: Request, res: Response) => {
       })
     }
     const accessToken = signJWT({ ...user }, { expiresIn: '1d' })
+    const refreshToken = signJWT({ ...user }, { expiresIn: '1y' })
     logger.info('login success')
     return res.status(200).send({
       status: true,
       statusCode: 200,
       message: 'login success',
+      data: { accessToken, refreshToken }
+    })
+  } catch (error: any) {
+    logger.error(`ERR: create - session = ${error.message}`)
+    return res.status(422).send({
+      status: false,
+      statusCode: 422,
+      message: error.message
+    })
+  }
+}
+
+export const refreshSession = async (req: Request, res: Response) => {
+  const { error, value } = refreshSessionValidation(req.body)
+  if (error) {
+    logger.error(`ERR: refresh - session = ${error.message}`)
+    return res.status(422).send({
+      status: false,
+      statusCode: 422,
+      message: error.message
+    })
+  }
+
+  try {
+    const { decoded } = verifyJWT(value.refreshToken)
+    const user = await findUserByEmail(decoded._doc.email)
+    if (!user) {
+      logger.error('ERR: refresh - session = user not found')
+      return res.status(422).send({
+        status: false,
+        statusCode: 422,
+        message: 'user not found'
+      })
+    }
+    const accessToken = signJWT({ ...user }, { expiresIn: '1d' })
+    logger.info('refresh token success')
+    return res.status(200).send({
+      status: true,
+      statusCode: 200,
+      message: 'refresh token success',
       data: { accessToken }
     })
   } catch (error: any) {
-    logger.error(`ERR: auth - register = ${error.message}`)
+    logger.error(`ERR: refresh - session = ${error.message}`)
     return res.status(422).send({
       status: false,
       statusCode: 422,
