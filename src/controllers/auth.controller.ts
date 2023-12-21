@@ -55,9 +55,9 @@ export const createSession = async (req: Request, res: Response) => {
     const user: any = await findUserByEmail(value.email)
     if (!user) {
       logger.error('ERR: create - session = user not found')
-      return res.status(422).send({
+      return res.status(404).send({
         status: false,
-        statusCode: 422,
+        statusCode: 404,
         message: 'user not found'
       })
     }

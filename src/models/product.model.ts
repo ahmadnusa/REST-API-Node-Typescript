@@ -7,8 +7,11 @@ const productSchema = new mongoose.Schema(
     price: { type: Number },
     size: { type: String }
   },
-  { timestamps: true }
+  {
+    timestamps: true
+  }
 )
+productSchema.index({ name: 1, size: 1 }, { unique: true })
 
 const ProductModel = mongoose.model('Product', productSchema)
 

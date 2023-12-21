@@ -14,7 +14,8 @@
     "**/build/*", 
     "**/node_modules/*",
     "**/public/*",
-    "**/tsconfig.json"
+    "**/tsconfig.json",
+    "**/jest.config.js"
   ],
   "rules": {
     "@typescript-eslint/consistent-type-imports": ["off"],
