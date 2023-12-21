@@ -1,6 +1,6 @@
-## README.md for "REST API with NodeJS with TypeScript"
+## REST API with NodeJS with TypeScript
 
-### Brief Description
+### Description
 This project is a RESTful API built using NodeJS with TypeScript. The primary objective is to provide CRUD (Create, Read, Update, Delete) operations for products stored in a MongoDB database. Additionally, the project incorporates user authentication using JWT (JSON Web Token) to ensure security and authorization for accessing the API.
 
 ### Key Features
