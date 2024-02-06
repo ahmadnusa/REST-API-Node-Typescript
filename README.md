@@ -3,7 +3,7 @@
 ### Description
 This project is a RESTful API built using NodeJS with TypeScript. The primary objective is to provide CRUD (Create, Read, Update, Delete) operations for products stored in a MongoDB database. Additionally, the project incorporates user authentication using JWT (JSON Web Token) to ensure security and authorization for accessing the API.
 
-### Key Features
+### Features
 
 1. **CRUD Product**:
     - **Create**: Add a new product to the database.
